@@ -29,13 +29,20 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-        print("In trigger!");
-        GetNewDestination();
+        if (other.transform == waypointTransform) {
+            GetNewDestination();
+        }
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        float angle = Vector3.Angle(transform.forward, playerTransform.position - transform.position);
+
+        if (angle <= 45) {
+            print("DETECTED!!!");
+        }
+
     }
 }
