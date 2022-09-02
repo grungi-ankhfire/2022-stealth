@@ -3027,7 +3027,7 @@ NavMeshObstacle:
   m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 1
-  m_CarveOnlyStationary: 1
+  m_CarveOnlyStationary: 0
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
 --- !u!65 &2061447175
@@ -3041,7 +3041,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.0000002, y: 1, z: 3}
+  m_Size: {x: 1.5, y: 1, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2061447176
 MonoBehaviour:
@@ -3057,6 +3057,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   decal: {x: 0, y: 0, z: -4.5}
   doorTime: 1
+  openTime: 2
+  whenOpen:
+    m_PersistentCalls:
+      m_Calls: []
+  whenClosed:
+    m_PersistentCalls:
+      m_Calls: []
   status: 1
 --- !u!1 &2077703238
 GameObject:
