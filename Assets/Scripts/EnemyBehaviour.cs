@@ -6,18 +6,29 @@ using UnityEngine.AI;
 public class EnemyBehaviour : MonoBehaviour
 {
     
+    public enum  State
+    {
+        walking, chasing
+    }
+
+    public State status = State.walking;
+
     private NavMeshAgent agent;
     public Transform playerTransform;
     private Transform waypointTransform;
     public Transform groupTransform;
+    public Transform centerEye;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         GetNewDestination();
+        if(centerEye == null){
+            Debug.LogError("You need to define the variable center eye");
+        }
     }
 
-    void GetNewDestination() {
+    private void GetNewDestination() {
         Transform currentDestination = waypointTransform;
 
         do {
@@ -28,21 +39,52 @@ public class EnemyBehaviour : MonoBehaviour
         agent.SetDestination(waypointTransform.position);
     }
 
-    void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter(Collider other) {
         if (other.transform == waypointTransform) {
             GetNewDestination();
         }
     }
 
+    private bool DetectPlayer(){
+        Vector3 direction = playerTransform.position - centerEye.position;
+        direction = direction.normalized;
 
+        float angle = Vector3.Angle(centerEye.forward, direction);
+
+        if (angle <= 45) {
+            RaycastHit raycasthit;
+            Debug.DrawRay(centerEye.position, direction * 100, Color.red, 1f);
+
+            if(Physics.Raycast(centerEye.position, direction, out raycasthit)){
+                Debug.Log($"Hit: {raycasthit.transform.name}");
+                if(raycasthit.transform == playerTransform){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void UpdateWalking(){
+        if(DetectPlayer()){
+            status = State.chasing;
+        }
+    }
+
+    void UpdateChasing(){
+        agent.SetDestination(playerTransform.position);
+        if(!DetectPlayer()){
+            status = State.walking;
+            GetNewDestination();
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        float angle = Vector3.Angle(transform.forward, playerTransform.position - transform.position);
-
-        if (angle <= 45) {
-            print("DETECTED!!!");
+        switch (status)
+        {
+            case State.walking: UpdateWalking(); break;
+            case State.chasing: UpdateChasing(); break; 
         }
-
     }
 }
